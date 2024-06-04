@@ -1,65 +1,84 @@
 import os
 import csv
+from pathlib import Path
 
-pypoll = os.path.join("..", "Resources", "election_data.csv")
+# find path 
+pypollPath = Path('/Users/sarahdutton/challenge 3/python-challenge/PyPoll/Resources/election_data.csv')
+
+# declare variables
+totalVotes = 0
+stockhamVotes = 0
+degetteVotes = 0
+doaneVotes = 0
 
 # open csv file
-with open(pypoll, newline="", encoding="utf-8") as csvfile:
-    csvreader= csv.reader(pypoll, delimiter=",")
+with open(pypollPath, newline='', encoding="utf-8") as csvfile:
+   
+    csvReader= csv.reader(csvfile, delimiter=",")
     
-    next(csvreader)
+    csvHeader = next(csvReader)
+   
     
-# total votes cast
-    data = list(csvreader)
-    row_count = len(data)
+# total number of votes per candidate 
 
-# create lists
-    candidate_list = []
-    tally = []
-    votes = []
-    percentage = []
-    
- # complete list of cadidates who recieved votes   
-    for i in range (0,row_count):
-        candidate = [i][2]
-        votes.append(candidate)
-        if candidate not in candidate_list:
-            candidate_list.append(candidate)
-        candidate_count = len(candidate_list)
+    for row in csvReader:
         
-# percentage of votes each candidate won
-# total number of votes each candidate won        
-    for j in range (0,candidate_count):
-        name = candidate_list[j]
-        votes.append(tally.count(name))
-        votes_percent = votes[j]/row_count
-        percentage.append(votes_percent)            
-            
-# the winner of the election by popular vote
-    winner = votes.index(max(votes))
-    
-# print all to terminal
-    print("Election Results")
-    print("----------------")
-    print(f"Total Votes: {row_count:,}")
-    print("----------------")
-    for k in range (0,candidate_count): 
-        print(f"{candidate_list[k]}: {percentage[k]:.3%} ({votes[k]:,})")
-    print("----------------")
-    print(f"Winner: {candidate_list[winner]}")
-    print("----------------")
+        totalVotes += 1
+        
+        if row[2] == "Charles Casper Stockham": 
+            stockhamVotes += 1
+        elif row[2] == "Diana DeGette":
+            degetteVotes += 1
+        elif row[2] == "Raymon Anthony Doane": 
+            doaneVotes += 1
+       
 
-  # Print the results to text file
-    print("Election Results", file=open("PyPoll.txt", "a"))
-    print("----------------", file=open("PyPoll.txt", "a"))
-    
-    print(f"Total Votes: {row_count:,}", file=open("PyPoll.txt", "a"))
-    print("----------------", file=open("PyPoll.txt", "a"))
-    
-    for k in range (0,candidate_count): 
-        print(f"{candidate_list[k]}: {percentage[k]:.3%} ({votes[k]:,})", file=open("PyPoll.txt", "a"))
-    
-    print("------------------", file=open("PyPoll.txt", "a"))
-    
-    print(f"Winner: {candidate_list[winner]}", file=open("PyPoll.txt", "a"))
-    print("--------------------", file=open("PyPoll.txt", "a"))
+           
+candidates = ["Charles Casper Stockham", "Diana DeGette", "Raymon Anthony Doane"]          
+votes = [stockhamVotes, degetteVotes, doaneVotes]
+
+# find winner
+candidatesAndVotes = list(zip(candidates, votes))
+winner = max(candidatesAndVotes)
+
+# find percentage 
+stockhamPercent = (stockhamVotes/totalVotes) * 100
+degettePercent = (degetteVotes/totalVotes) * 100
+doanePercent = (doaneVotes/totalVotes)* 100
+
+print(f"Election Results")
+print(f"----------------")
+# total number of votes cast
+print(f"Total Votes: {totalVotes}")
+print(f"-----------------")
+print(f"Charles Casper Stockham: {stockhamPercent:.3f}% ({stockhamVotes})")
+print(f"Diana Degette: {degettePercent:.3f}% ({degetteVotes})")
+print(f"Raymon Anthony Doane: {doanePercent:.3f}% ({doaneVotes})")
+print(f"-----------------")
+print(f"Winner: {winner}")
+print(f"-----------------")
+
+# print to txt file
+PypollTxt = Path("/Users/sarahdutton/challenge 3/python-challenge/PyPoll/analysis/pypoll.txt")
+
+with open(PypollTxt,"w") as file:
+
+    file.write(f"Election Results")
+    file.write("\n")
+    file.write(f"---------------------")
+    file.write("\n")
+    file.write(f"Total Votes: {totalVotes}")
+    file.write("\n")
+    file.write(f"-----------------------")
+    file.write("\n")
+    file.write(f"Charles Casper Stockham: {stockhamPercent:.3f}% ({stockhamVotes})")
+    file.write("\n")
+    file.write(f"Diana Degette: {degettePercent:.3f}% ({degetteVotes})")
+    file.write("\n")
+    file.write(f"Raymon Anthony Doane: {doanePercent:.3f}% ({doaneVotes})")
+    file.write("\n")
+    file.write(f"------------------------")
+    file.write("\n")
+    file.write(f"Winner: {winner}")
+    file.write("\n")
+    file.write(f"------------------------")
